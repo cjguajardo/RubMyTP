@@ -1,6 +1,6 @@
 # tp-sound
 
-Hook the TrackPoint (or any mouse) button events and play random sounds.
+Hook the ThinkPad TrackPoint button events and play random sounds.
 
 ## Build
 
@@ -45,7 +45,7 @@ Put `.wav`, `.mp3`, `.ogg`, or `.flac` files in a directory and pass it with `-s
 
 ## How it works
 
-- **Linux**: opens `/dev/input/event*`, reads `input_event` structs, watches for `EV_KEY` button presses
+- **Linux**: scans `/dev/input/event*` for TrackPoint devices by name, reads `input_event` structs, watches for `EV_KEY` button presses (BTN_LEFT/RIGHT/MIDDLE). Falls back to nothing — TrackPoint-only.
 - **Windows**: registers `Raw Input API` for HID mouse events, plays audio via `winmm.dll` / `PlaySound`
 - On each button press, plays a random sound from the pool (round-robin without repeat)
 
