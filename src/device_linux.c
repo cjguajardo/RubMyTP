@@ -75,33 +75,5 @@ const char *device_find_trackpoint(void) {
 
     closedir(dir);
 
-    if (!found) {
-        // fallback: try to find any mouse device
-        dir = opendir("/dev/input");
-        if (!dir) return NULL;
-
-        while ((entry = readdir(dir)) != NULL) {
-            if (strncmp(entry->d_name, "event", 5) != 0) continue;
-
-            snprintf(dev_path, sizeof(dev_path), "/dev/input/%s", entry->d_name);
-
-            f = fopen(dev_path, "r");
-            if (!f) continue;
-
-            if (fgets(name, sizeof(name), f) == NULL) {
-                fclose(f);
-                continue;
-            }
-            fclose(f);
-
-            if (strstr(name, "mouse") || strstr(name, "Mouse")) {
-                snprintf(path, sizeof(path), "%s", dev_path);
-                found = 1;
-                break;
-            }
-        }
-        closedir(dir);
-    }
-
     return found ? path : NULL;
 }
