@@ -1,0 +1,20 @@
+# Buildea el ejecutable Windows (cross-compile con MinGW desde Linux)
+# Usage: docker build -f Dockerfile.windows -t tp-sound:windows .
+# Output: tp-sound.exe en /build/
+
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc-mingw-w64 \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+
+COPY src ./src
+COPY Makefile .
+
+RUN make windows \
+    CC=x86_64-w64-mingw32-gcc \
+    TARGET_WINDOWS=tp-sound.exe \
+    SRC_WINDOWS="src/main.c src/device_windows.c src/audio_winmm.c"

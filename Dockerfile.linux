@@ -1,0 +1,22 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    make \
+    ffmpeg \
+    libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+
+COPY src ./src
+COPY Makefile .
+
+RUN make linux
+
+FROM alpine:3.19
+RUN apk add --no-cache ffmpeg
+
+COPY --from=0 /build/tp-sound /usr/local/bin/tp-sound
+
+ENTRYPOINT ["tp-sound"]
